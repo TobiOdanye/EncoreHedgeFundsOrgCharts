@@ -475,7 +475,9 @@ for id, label in allowed_ids.items():
                 "Candidate Seniority", "Candidate Company Previous", "Candidate Company Previous End Date", "Candidate Move Within Year", "Candidate Move Within 6 Months"
             ]]
 
+            candidate_reports_into = fetch_candidates_additional_labels(candidates, api_tokens)
             candidates_output = pd.merge(candidates, candidate_reports_into, on='Candidate ID', how='inner')
+            
             token_iterator = itertools.cycle(api_tokens)
             candidates_output["Discipline"] = candidates_output["Candidate ID"].apply(lambda cid: get_disc(cid, token_iterator, api_id))
             
@@ -497,8 +499,6 @@ for id, label in allowed_ids.items():
 
             for key in location_map:
                 candidates.loc[candidates['Candidate Location'].str.contains(key, case=False, na=False), 'Candidate Location'] = location_map[key]
-
-            candidate_reports_into = fetch_candidates_additional_labels(candidates, api_tokens)
 
             # Apply the function row-wise
             candidates_output["Platform Type Move"] = candidates_output.apply(determine_platform_type_move, axis=1)
