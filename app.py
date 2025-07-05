@@ -212,60 +212,27 @@ def fetch_hotlist_candidates(api_id, api_tokens):
 
 # Normalize and map fallback + bracket values to final form
 fallback_map = {
-    'executive director': 'ED',
-    'managing director': 'MD',
-    'vice president': 'VP',
-    'vice-president': 'VP',
-    'vp': 'VP',
-    'md': 'MD',
-    'ed': 'ED',
-    'assoc': 'As',
-    'assoc.': 'As',
-    'as': 'As',
-    'an': 'An',
-    'analyst': 'An',
-    'director': 'D',
-    'd': 'D',
-    'ad': 'D'
+    'Sr. PM': 'Sr. PM',
+    'PM': 'PM',
+    'Sub-PM': 'Sub-PM',
+    'Sr. An': 'Sr. An',
+    'An': 'An'
 }
 
-# Normalize and map fallback + bracket values to final form
-ordered_fallback_map = {
-    'managing director': 'MD',
-    'executive director': 'ED',
-    'director': 'D',
-    'vice president': 'VP',
-    'vice-president': 'VP',
-    'vp': 'VP',
-    'md': 'MD',
-    'assoc': 'As',
-    'assoc.': 'As',
-    'analyst': 'An'}
-
-# Ordered list for substring matching
-ordered_fallbacks = list(ordered_fallback_map.keys())
-
-# Approved values for brackets (case-insensitive)
-allowed_bracket_values = set(fallback_map.keys())
-
+# Case-insensitive match mapping
+normalized_map = {k.lower(): v for k, v in fallback_map.items()}
 
 def extract_seniority(text):
-    text_lower = text.lower()
+    if not isinstance(text, str):
+        return None
 
-    # 1. Try to extract and validate bracketed content
     bracket_match = re.search(r'\(([^)]+)\)', text)
     if bracket_match:
         bracket_value = bracket_match.group(1).strip().lower()
-        if bracket_value in allowed_bracket_values:
-            return fallback_map[bracket_value]
-
-    # 2. Fallback to substring search
-    for keyword in ordered_fallbacks:
-        if keyword in text_lower:
-            return fallback_map[keyword]
-
+        if bracket_value in normalized_map:
+            return normalized_map[bracket_value]
+    
     return None  # or 'Unknown'
-
 
 def fetch_candidates_additional_labels(hotlist_df_trans, api_tokens):
     candidate_id_list = list(hotlist_df_trans['Candidate ID'].unique())
@@ -311,6 +278,7 @@ def fetch_candidates_additional_labels(hotlist_df_trans, api_tokens):
     df = pd.DataFrame(candidates_additional_list).reset_index(drop=True)
 
     return df
+
 
 def get_candidate_companies(group):
     group = group.sort_values(by='Candidate Experience')
