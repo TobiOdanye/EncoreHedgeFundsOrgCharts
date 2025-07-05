@@ -484,8 +484,8 @@ for id, label in allowed_ids.items():
             candidates_output["Current Entity Type"] = candidates_output["Candidate Company"].apply(lambda x: assign_type_by_substring(x, entity_dict))
             candidates_output["Previous Entity Type"] = candidates_output["Candidate Company Previous"].apply(lambda x: assign_type_by_substring(x, entity_dict))
 
-            candidates["Candidate Company"] = candidates["Candidate Company"].apply(normalize_company_by_substring)
-            candidates["Candidate Company Previous"] = candidates["Candidate Company Previous"].apply(normalize_company_by_substring)
+            candidates["Candidate Company"] = candidates["Candidate Company"].apply(normalize_company_by_substring(x, entity_dict))
+            candidates["Candidate Company Previous"] = candidates["Candidate Company Previous"].apply(normalize_company_by_substring(x, entity_dict))
             
             candidates["Lucid Space"] = ""
             candidates["Lucid Space 2"] = ""
