@@ -419,6 +419,21 @@ def normalize_company_by_substring(company_name, entity_dict):
         else:
             return company_name
 
+def determine_platform_type_move(row):
+                current = row["Current Entity Type"]
+                previous = row["Previous Entity Type"]
+
+                if current == "Bank" and previous == "Bank":
+                    return "Bank to Bank"
+                elif current == "Bank" and previous == "Trading House":
+                    return "Trading House to Bank"
+                elif previous == "Bank" and current == "Trading House":
+                    return "Bank to Trading House"
+                elif current == "Hedge Fund" and previous == "Bank":
+                    return "Bank to Hedge Fund"
+                else:
+                    return "Other"
+
 entity_dict = {
                 "Standard Chartered": "Bank", "ICBC": "Bank", "Bank of America": "Bank",
                 "Citi": "Bank", "Macquarie": "Bank", "Goldman Sachs": "Bank",
@@ -459,6 +474,10 @@ for id, label in allowed_ids.items():
                 "Candidate ID", "Candidate Name", "Candidate Title", "Candidate Company", "Candidate Company Start Date", "Candidate Location", 
                 "Candidate Seniority", "Candidate Company Previous", "Candidate Company Previous End Date", "Candidate Move Within Year", "Candidate Move Within 6 Months"
             ]]
+
+            candidates_output = pd.merge(candidates, candidate_reports_into, on='Candidate ID', how='inner')
+            token_iterator = itertools.cycle(api_tokens)
+            candidates_output["Discipline"] = candidates_output["Candidate ID"].apply(lambda cid: get_disc(cid, token_iterator, api_id))
             
             candidates_output["Current Entity Type"] = candidates_output["Candidate Company"].apply(lambda x: assign_type_by_substring(x, entity_dict))
             candidates_output["Previous Entity Type"] = candidates_output["Candidate Company Previous"].apply(lambda x: assign_type_by_substring(x, entity_dict))
@@ -480,25 +499,6 @@ for id, label in allowed_ids.items():
                 candidates.loc[candidates['Candidate Location'].str.contains(key, case=False, na=False), 'Candidate Location'] = location_map[key]
 
             candidate_reports_into = fetch_candidates_additional_labels(candidates, api_tokens)
-            candidates_output = pd.merge(candidates, candidate_reports_into, on='Candidate ID', how='inner')
-
-            token_iterator = itertools.cycle(api_tokens)
-            candidates_output["Discipline"] = candidates_output["Candidate ID"].apply(lambda cid: get_disc(cid, token_iterator, api_id))
-
-            def determine_platform_type_move(row):
-                current = row["Current Entity Type"]
-                previous = row["Previous Entity Type"]
-
-                if current == "Bank" and previous == "Bank":
-                    return "Bank to Bank"
-                elif current == "Bank" and previous == "Trading House":
-                    return "Trading House to Bank"
-                elif previous == "Bank" and current == "Trading House":
-                    return "Bank to Trading House"
-                elif current == "Hedge Fund" and previous == "Bank":
-                    return "Bank to Hedge Fund"
-                else:
-                    return "Other"
 
             # Apply the function row-wise
             candidates_output["Platform Type Move"] = candidates_output.apply(determine_platform_type_move, axis=1)
