@@ -411,7 +411,8 @@ entity_dict = {
                 "Credit Suisse": "Bank", "RBC": "Bank", "ANZ": "Bank", "TD Securities": "Bank",
                 "Mercuria": "Trading House", "Vitol": "Trading House", "Trafigura": "Trading House",
                 "Hartree": "Trading House", "Koch": "Trading House",
-                "Rokos": "Hedge Fund"
+                "Rokos": "Hedge Fund", "Citadel": "Hedge Fund", "Millennium": "Hedge Fund",
+                "Balyasny": "Hedge Fund", "Squarepoint": "Hedge Fund", "Bluecrest": "Hedge Fund"
             }
 
 # Streamlit UI
