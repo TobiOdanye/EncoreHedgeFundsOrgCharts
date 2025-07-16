@@ -347,9 +347,7 @@ def get_disc(candidateId, token_iterator, api_id):
     page_response = requests.get(page_url, headers=headers)
 
     field_ids = {
-        656050: 11941,
-        647987: 11817
-    }
+        666490: 11946}
 
     api_id = int(api_id)
 
