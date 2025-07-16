@@ -453,9 +453,6 @@ for id, label in allowed_ids.items():
 
             candidates["Candidate Company"] = candidates["Candidate Company"].apply(lambda x: normalize_company_by_substring(x, entity_dict))
             candidates["Candidate Company Previous"] = candidates["Candidate Company Previous"].apply(lambda x: normalize_company_by_substring(x, entity_dict))
-            
-            candidates["Lucid Space"] = ""
-            candidates["Lucid Space 2"] = ""
 
             location_map = {
                 'Paris': 'Paris',
@@ -469,6 +466,8 @@ for id, label in allowed_ids.items():
 
             # Apply the function row-wise
             candidates_output["Platform Type Move"] = candidates_output.apply(determine_platform_type_move, axis=1)
+            candidates_output["Lucid Space"] = ""
+            candidates_output["Lucid Space 2"] = ""
 
             st.success(f"Data fetched successfully for {label} ({id})!")
 
