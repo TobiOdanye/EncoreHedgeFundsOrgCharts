@@ -472,7 +472,9 @@ for id, label in allowed_ids.items():
             st.success(f"Data fetched successfully for {label} ({id})!")
 
             sheet_keys = {
-                "666490": "1zK7H16AlYKsvfX-aMLWjUAqKF4wqQAtnfJSuQPRibRE"
+                "666490": "1zK7H16AlYKsvfX-aMLWjUAqKF4wqQAtnfJSuQPRibRE",
+                "666513" :"1ikhqVz8Neb1a6oDtdw6L-dV69M64tyNnMTRoRf2Mlu0",
+                "669571": "1zK7H16AlYKsvfX-aMLWjUAqKF4wqQAtnfJSuQPRibRE"
             }
 
             sheet_key = sheet_keys.get(api_id)
